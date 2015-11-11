@@ -1,4 +1,3 @@
-
 package models;
 
 import java.io.IOException;
@@ -49,6 +48,7 @@ public class CamaraModel {
 						camara.obterDados();
 						for (CamaraModelDelegate listener : depsListeners) {
 							listener.updateData();
+							listener.depsDataHaveLoaded();
 						}
 						System.out.println("Dados iniciais obtidos.");
 						for (Deputado deputado : getDeputados()) {
@@ -57,18 +57,22 @@ public class CamaraModel {
 							if (!partidos.contains(partido)) {
 								partidos.add(partido);
 								partidosCount.add(new Integer(0));
-								for (CamaraModelDelegate listener : partiesListeners) {
-									listener.updateData();
-								}
+							}
+							for (CamaraModelDelegate listener : partiesListeners) {
+								listener.updateData();
 							}
 							int index = partidos.indexOf(partido);
 							partidosCount.set(index, partidosCount.get(index) + 1);
 						}
+						for (CamaraModelDelegate listener : depsListeners) {
+							listener.updateData();
+							listener.partiesDataHaveLoaded();
+						}
 						System.out.println(partidos);
 					} catch (IOException e) {
-						
+						e.printStackTrace();
 					} catch (JAXBException e) {
-						
+						e.printStackTrace();
 					}
 				}
 			}).start();
